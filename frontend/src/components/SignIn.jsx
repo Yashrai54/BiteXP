@@ -23,8 +23,14 @@ const SignIn = () => {
         try {
            
             const res = await axios.post(`${serverurl}/api/auth/signin`, form, { withCredentials: true });
-            setMessage(res.data.message);
-            await fetchUserProfile();
+setMessage(res.data.message);
+if (res.status === 200) {
+   setTimeout(async () => {
+      await fetchUserProfile();
+      navigate("/");
+   }, 500);
+}
+
             navigate("/"); 
         } catch (error) {
            
