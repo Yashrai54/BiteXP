@@ -10,7 +10,7 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState([]);
   const [recipe,setRecipe]=useState({})
-  const serverurl=process.env.RENDER_URL
+  const serverurl=import.meta.env.VITE_RENDER_URL
 
   const fetchProfile = async () => {
     const res = await axios.get(`${serverurl}/api/auth/profile`, { withCredentials: true });
