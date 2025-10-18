@@ -1,13 +1,15 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import dotenv from 'dotenv'
 
+dotenv.config()
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState([]);
   const [recipe,setRecipe]=useState({})
-  const serverurl="http://localhost:8000"
+  const serverurl=process.env.RENDER_URL
 
   const fetchProfile = async () => {
     const res = await axios.get("http://localhost:8000/api/auth/profile", { withCredentials: true });
