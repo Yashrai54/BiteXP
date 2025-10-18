@@ -24,7 +24,7 @@ const SignIn = () => {
            
             const res = await axios.post(`${serverurl}/api/auth/signin`, form, { withCredentials: true });
             setMessage(res.data.message);
-            await fetchProfile();
+            await fetchUserProfile();
             navigate("/"); 
         } catch (error) {
            
