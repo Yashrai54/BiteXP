@@ -24,35 +24,42 @@ export const handleSignup=async(req,res)=>{
         return res.status(400).json({"message":"Unknown Error Occurred"})
     }
 }
-export const handleSignIn=async(req,res)=>{
-    try {
-        const {email,password}=req.body;
+export const handleSignIn = async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-        const user=await userModel.findOne({email});
-        if(!user){
-            return res.status(400).json({"message":"Email or password Incorrect"});
-        }
-        const comparepassword=await bcrypt.compare(password,user.password)
-        if(!comparepassword){
-             return res.status(400).json({"message":"Email or password Incorrect"});
-        }
-        const session = jwt.sign(
-  { id: user._id, name: user.name, email: user.email },
-  process.env.JWT_SECRET_KEY,
-  { expiresIn: "10d" }
-);
-       res.cookie("token", session, {
-  httpOnly: true,
-  maxAge: 10*24*60*60*1000,
-  secure: true,      // must be true for HTTPS
-  sameSite: 'None'   // allows cross-site cookies
-});
-
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({"message":"Server Error"})
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Email or password Incorrect" });
     }
-}
+
+    const comparePassword = await bcrypt.compare(password, user.password);
+    if (!comparePassword) {
+      return res.status(400).json({ message: "Email or password Incorrect" });
+    }
+
+    const session = jwt.sign(
+      { id: user._id, name: user.name, email: user.email },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "10d" }
+    );
+
+    res.cookie("token", session, {
+      httpOnly: true,
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+      secure: true,       // must be true for HTTPS
+      sameSite: 'None'    // allows cross-site cookies
+    });
+
+    // ✅ Send a response body so frontend knows login succeeded
+    return res.status(200).json({ message: "User login successful", user: { id: user._id, name: user.name, email: user.email } });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
 export const handleRecipeCompletion=async(req,res)=>{
     const user=await userModel.findById(req.user._id)
     const {recipeId}=req.body;
