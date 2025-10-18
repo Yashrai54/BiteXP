@@ -8,9 +8,7 @@ import RecipeDetail from './components/RecipeDetail.jsx';
 import { useAppContext } from './context/UserContext.jsx';
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAppContext();
-
-  if (loading) return <div>Loading...</div>; // wait until context is ready
+  const { user } = useAppContext();
   return user ? children : <Navigate to="/signin" replace />;
 };
 
