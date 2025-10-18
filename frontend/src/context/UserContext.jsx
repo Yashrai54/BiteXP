@@ -18,6 +18,7 @@ export const AppProvider = ({ children }) => {
   const fetchProfile = async () => {
     try {
       // The middleware populates the user object based on the cookie
+      console.log(serverurl)
       const res = await axios.get(`${serverurl}/api/auth/profile`, { withCredentials: true });
       setUser(res.data);
     } catch (error) {
