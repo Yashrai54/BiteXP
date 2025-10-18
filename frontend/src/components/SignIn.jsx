@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'; // <-- Replaced with MOCK defini
 const SignIn = () => {
     const [form, setForm] = useState({ email: "", password: "" });
     const [message, setMessage] = useState("");
-    const { serverurl } = useAppContext();
+    const { serverurl ,fetchUserProfile} = useAppContext();
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -23,7 +23,7 @@ const SignIn = () => {
         try {
            
             const res = await axios.post(`${serverurl}/api/auth/signin`, form, { withCredentials: true });
-            console.log(serverurl)
+            await fetchUserProfile()
             setMessage(res.data.message);
             navigate("/"); 
         } catch (error) {
