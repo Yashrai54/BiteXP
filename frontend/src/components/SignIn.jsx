@@ -23,8 +23,9 @@ const SignIn = () => {
         try {
            
             const res = await axios.post(`${serverurl}/api/auth/signin`, form, { withCredentials: true });
+            console.log(serverurl)
             setMessage(res.data.message);
-                navigate("/"); 
+            navigate("/"); 
         } catch (error) {
            
             setMessage(error.response?.data?.message || "Sign-in failed");
