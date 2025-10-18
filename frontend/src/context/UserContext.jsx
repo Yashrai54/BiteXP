@@ -9,16 +9,9 @@ export const AppProvider = ({ children }) => {
   const [recipe, setRecipe] = useState({});
   const serverurl = import.meta.env.VITE_RENDER_URL; // VITE_ prefix required
 
-  const fetchProfile = async () => {
-    try {
-  const res = await axios.post(`${serverurl}/api/auth/signin`, form, { withCredentials: true });
-  setUser(res.data.user);
-  navigate("/");
-} catch (err) {
-  setMessage(err.response?.data?.message || "Sign-in failed");
-} finally {
-  setIsLoading(false);
-}
+   const fetchProfile = async () => {
+    const res = await axios.get(`${serverurl}/api/auth/profile`, { withCredentials: true });
+    setUser(res.data);
   };
 
   const fetchRecipes = async () => {
