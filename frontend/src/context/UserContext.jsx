@@ -1,16 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-import dotenv from 'dotenv'
-
-dotenv.config()
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState([]);
-  const [recipe,setRecipe]=useState({})
-  const serverurl=import.meta.env.VITE_RENDER_URL
+  const [recipe, setRecipe] = useState({});
+  const serverurl = import.meta.env.VITE_RENDER_URL; // VITE_ prefix required
 
   const fetchProfile = async () => {
     const res = await axios.get(`${serverurl}/api/auth/profile`, { withCredentials: true });
@@ -33,7 +30,7 @@ export const AppProvider = ({ children }) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ user, recipes, completeRecipe ,serverurl}}>
+    <AppContext.Provider value={{ user, recipes, completeRecipe, serverurl }}>
       {children}
     </AppContext.Provider>
   );
