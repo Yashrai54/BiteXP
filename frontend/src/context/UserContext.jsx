@@ -9,9 +9,10 @@ export const AppProvider = ({ children }) => {
   const [recipe,setRecipe]=useState({}); // Initialize to empty object for consistency
   const [isAuthReady, setIsAuthReady] = useState(false); // New state to track if initial auth check is done
   
-  // NOTE: You should use a relative path like '/api/...' if the frontend and backend run on the same domain
-  // But we will stick to your provided external URL:
-  const serverurl = import.meta.env.VITE_RENDER_URL; 
+  // CRITICAL FIX: Add fallback URL to prevent crashes if VITE_RENDER_URL is undefined
+  // The error (warning) is caused by the environment, but if the value is missing,
+  // all API calls will fail silently, leading to the sign-in redirect loop.
+  const serverurl = import.meta.env.VITE_RENDER_URL || "http://localhost:8000"; 
 
   // --- CRITICAL: Added try/catch and setIsAuthReady ---
   const fetchProfile = async () => {
