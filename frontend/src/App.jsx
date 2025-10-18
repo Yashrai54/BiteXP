@@ -12,7 +12,7 @@ import { useAppContext } from './context/UserContext.jsx';
 const App = () => {
   // NOTE: useAppContext is now called inside ProtectedRoute and Home/RecipeList components
   // It doesn't need to be called here unless you were using 'user' for App-level logic
-
+   const {user}=useAppContext()
   return (
     <Routes>
       <Route path="/signin" element={<SignIn />} />
@@ -20,7 +20,7 @@ const App = () => {
       
       {/* Public/Protected Home Route (if user is authenticated, it renders Home, otherwise SignIn) */}
       {/* The original Home implementation was okay for this specific path, but let's use the ProtectedRoute concept */}
-      <Route path="/" element={<Home /> } />
+      <Route path="/" element={user?<Home/>:<SignIn></SignIn> } />
 
       {/* Protected Routes */}
       <Route path="/recipe" element={<RecipeList/>} />
