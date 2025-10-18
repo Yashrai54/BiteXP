@@ -23,8 +23,8 @@ const App = () => {
       <Route path="/" element={<Home /> } />
 
       {/* Protected Routes */}
-      <Route path="/recipe" element={<RecipeList/>} />} />
-      <Route path="/recipe/:id" element={<RecipeDetail />/>} />
+      <Route path="/recipe" element={<RecipeList/>} />
+      <Route path="/recipe/:id" element={<RecipeDetail />}/>
 
       {/* Optional: Add a catch-all route for 404s or redirecting bad paths */}
       {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
