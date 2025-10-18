@@ -41,8 +41,13 @@ export const handleSignIn=async(req,res)=>{
   process.env.JWT_SECRET_KEY,
   { expiresIn: "10d" }
 );
-        res.cookie("token", session, { httpOnly: true, maxAge: 10*24*60*60*1000 })
-   .json({ message: "user login successful" });
+       res.cookie("token", session, {
+  httpOnly: true,
+  maxAge: 10*24*60*60*1000,
+  secure: true,      // must be true for HTTPS
+  sameSite: 'None'   // allows cross-site cookies
+});
+
     } catch (error) {
         console.log(error)
         return res.status(500).json({"message":"Server Error"})
