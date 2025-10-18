@@ -7,11 +7,14 @@ import RecipeList from './components/RecipeList.jsx'
 import RecipeDetail from './components/RecipeDetail.jsx'
 import { useAppContext } from './context/UserContext.jsx'
 const App = () => {
-  const {user}=useAppContext();
+   const ProtectedRoute = ({ children }) => {
+  const { user } = useAppContext();
+  return user ? children : <SignIn />;
+};
   return (
     <div>
       <Routes>
-          <Route path='/' element={user?<Home></Home>:<SignIn></SignIn>}></Route>
+          <Route path='/' element={<ProtectedRoute><Home/></ProtectedRoute>}></Route>
           <Route path='/signup' element={<Signup></Signup>}></Route>
           <Route path='/signin' element={<SignIn></SignIn>}></Route>
           <Route path='/recipe' element={<RecipeList></RecipeList>}></Route>
