@@ -6,11 +6,17 @@ import SignIn from './components/SignIn.jsx'
 import RecipeList from './components/RecipeList.jsx'
 import RecipeDetail from './components/RecipeDetail.jsx'
 import { useAppContext } from './context/UserContext.jsx'
+  import { Navigate } from 'react-router-dom';
+
 const App = () => {
-   const ProtectedRoute = ({ children }) => {
+ 
+const ProtectedRoute = ({ children }) => {
   const { user } = useAppContext();
-  return user ? children : <SignIn />;
+  if (!user) return <Navigate to="/signin" replace />;
+  return children;
 };
+
+
   return (
     <div>
       <Routes>
