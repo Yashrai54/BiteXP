@@ -23,7 +23,6 @@ const SignIn = () => {
         try {
            
             const res = await axios.post(`${serverurl}/api/auth/signin`, form, { withCredentials: true });
-            await fetchUserProfile()
             setMessage(res.data.message);
             navigate("/"); 
         } catch (error) {
