@@ -6,31 +6,72 @@ const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [recipes, setRecipes] = useState([]);
-  const [recipe, setRecipe] = useState({});
-  const serverurl = import.meta.env.VITE_RENDER_URL; // VITE_ prefix required
+  const [recipe,setRecipe]=useState({}); // Initialize to empty object for consistency
+  const [isAuthReady, setIsAuthReady] = useState(false); // New state to track if initial auth check is done
+  
+  // NOTE: You should use a relative path like '/api/...' if the frontend and backend run on the same domain
+  // But we will stick to your provided external URL:
+  const serverurl = import.meta.env.VITE_RENDER_URL; 
 
-   const fetchProfile = async () => {
-    const res = await axios.get(`${serverurl}/api/auth/profile`, { withCredentials: true });
-    setUser(res.data);
+  // --- CRITICAL: Added try/catch and setIsAuthReady ---
+  const fetchProfile = async () => {
+    try {
+      // The middleware populates the user object based on the cookie
+      const res = await axios.get(`${serverurl}/api/auth/profile`, { withCredentials: true });
+      setUser(res.data);
+    } catch (error) {
+      // Expected to catch 401 Unauthorized when no valid cookie is present
+      if (error.response && error.response.status === 401) {
+        setUser(null); // Explicitly ensure user is null
+        console.log("No active session found.");
+      } else {
+        console.error("Error fetching profile:", error);
+      }
+    } finally {
+      setIsAuthReady(true); // Signal that the initial check is complete
+    }
   };
 
   const fetchRecipes = async () => {
-    const res = await axios.get(`${serverurl}/api/recipe`);
-    setRecipes(res.data);
+    try {
+        const res = await axios.get(`${serverurl}/api/recipe`);
+        setRecipes(res.data);
+    } catch (error) {
+        console.error("Error fetching recipes:", error);
+    }
   };
 
   const completeRecipe = async (recipeId) => {
-    const res = await axios.post(`${serverurl}/api/auth/update`, { recipeId }, { withCredentials: true });
-    setUser(res.data); 
+    try {
+        // You are sending the completed recipe back from the server in the response,
+        // so we update the local user state with the new data.
+        const res = await axios.post(`${serverurl}/api/auth/update`, { recipeId }, { withCredentials: true });
+        setUser(res.data); 
+    } catch (error) {
+        console.error("Error completing recipe:", error);
+        // Optional: Re-fetch profile if update failed but user is still logged in
+        // fetchProfile();
+    }
   };
   
   useEffect(() => {
-    fetchProfile();
+    // Run auth check only on initial mount
+    fetchProfile(); 
     fetchRecipes();
   }, []);
 
   return (
-    <AppContext.Provider value={{ user, recipes, completeRecipe, serverurl }}>
+    <AppContext.Provider 
+      value={{ 
+        user, 
+        setUser, // <--- EXPOSED: Required for sign-in/sign-out logic
+        fetchUserProfile: fetchProfile, // <--- EXPOSED: Required for sign-in redirect logic
+        isAuthReady, // <--- EXPOSED: Required for protecting initial routes
+        recipes, 
+        completeRecipe, 
+        serverurl
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
